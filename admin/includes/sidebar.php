@@ -38,7 +38,14 @@
         <li class="<?php if($page=='c-p-r'){ echo 'active'; }?>"><a href="progress-report.php"><i class="fas fa-arrow-right"></i> Customer Progress Report</a></li>
       </ul>
     </li>
-
+    <li class="submenu <?php if(in_array($page, ['list-package', 'add-package', 'remove-package', 'update-package'])){ echo 'active open'; }?>"> 
+  <a href="#"><i class="fas fa-box"></i> <span>Manage Packages</span></a>
+  <ul>
+      <li class="<?php if($page=='list-package'){ echo 'active'; }?>"><a href="list-package.php"><i class="fas fa-arrow-right"></i> List Packages</a></li>
+      <li class="<?php if($page=='Add Package'){ echo 'active'; }?>"><a href="Add Package.php"><i class="fas fa-arrow-right"></i> Add Package</a></li>
+  </ul>
+</li>
+    
      
    
     <!-- Visit codeastro.com for more projects -->
