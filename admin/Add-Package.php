@@ -75,7 +75,7 @@ if(!isset($_SESSION['user_id'])){
                             <div class="control-group">
                                 <label class="control-label">Status :</label>
                                 <div class="controls">
-                                    <select name="status" required>
+                                    <select name="package_status" required>
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                     </select>
@@ -84,7 +84,7 @@ if(!isset($_SESSION['user_id'])){
                             <div class="control-group">
                                 <label class="control-label">Type :</label>
                                 <div class="controls">
-                                    <select name="type" required>
+                                    <select name="package_type" required>
                                         <option value="Monthly">Monthly</option>
                                         <option value="Quarterly">Quarterly</option>
                                         <option value="Half-Yearly">Half-Yearly</option>
