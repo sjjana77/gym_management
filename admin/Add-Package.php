@@ -41,7 +41,7 @@ if(!isset($_SESSION['user_id'])){
                         <h5>Package Details</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="add-package-req.php" method="POST" class="form-horizontal">
+                        <form action="actions/add-package-req.php" method="POST" class="form-horizontal">
                             <div class="control-group">
                                 <label class="control-label">Package Name* :</label>
                                 <div class="controls">

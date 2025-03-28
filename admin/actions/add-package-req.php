@@ -1,10 +1,10 @@
 <?php
 include('../dbcon.php');
-
+session_start();
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve data from the request body
-    $data = json_decode(file_get_contents("php://input"), true);
+    $data = $_POST;
 
     // Required field validation
     if (!isset($data['package_name']) || !isset($data['package_amount'])) {
@@ -25,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $package_tax = isset($data['package_tax']) ? (int)$data['package_tax'] : 0; // Default: 0%
 
     // SQL Query to insert the data
-    $sql = "INSERT INTO packages 
-            (package_name, package_duration, package_description, package_service, package_amount, package_status, package_type, package_tax) 
+    $sql = "INSERT INTO packages_info
+            (package_name, package_duration, package_description, package_service, package_amount, package_status, package_type, package_tax, created_by) 
             VALUES 
             ('$package_name', 
              " . ($package_duration !== NULL ? "'$package_duration'" : "NULL") . ", 
@@ -35,17 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              '$package_amount', 
              '$package_status', 
              " . ($package_type !== NULL ? "'$package_type'" : "NULL") . ", 
-             '$package_tax')";
+             '$package_tax', '".$_SESSION['user_id']."')";
 
     if ($con->query($sql) === TRUE) {
         echo '<script>window.location="../list-package.php";</script>';
         exit();
     } else {
-        echo '<script>alert("Error: ' . $con->error . '"); window.location="../add_package.php";</script>';
+        echo '<script>alert("Error: ' . $con->error . '"); window.location="../add-package.php";</script>';
         exit();
     }
 } else {
-    echo '<script>alert("Invalid request method"); window.location="../add_package.php";</script>';
+    echo '<script>alert("Invalid request method"); window.location="../add-package.php";</script>';
     exit();
 }
 ?>

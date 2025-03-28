@@ -53,8 +53,12 @@ include '../includes/db_connect.php'; // Include DB connection
                                 <tr>
                                     <th>S.No</th>
                                     <th>Package Name</th>
-                                    <th>Package Duration</th>
-                                    <th>Package Type</th>
+                                    <th>Package Description</th>
+                                    <th>Duration</th>
+                                    <th>Service</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Type</th>
                                     <th>Status</th>
                                     <th>Amount</th>
                                     <th>Added By</th>
@@ -63,9 +67,9 @@ include '../includes/db_connect.php'; // Include DB connection
                             </thead>
                             <tbody>
                                 <?php
-                                $query = "SELECT p.*, u.username FROM packages p 
-                                          JOIN users u ON p.added_by = u.id 
-                                          ORDER BY p.id DESC";
+                                $query = "SELECT * FROM packages_info 
+                                          where is_obsolete = 0
+                                          ORDER BY id DESC";
                                 $result = mysqli_query($conn, $query);
                                 $sno = 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
