@@ -57,10 +57,8 @@ include '../includes/db_connect.php'; // Include DB connection
                                     <th>Duration</th>
                                     <th>Service</th>
                                     <th>Amount</th>
-                                    <th>Status</th>
                                     <th>Type</th>
                                     <th>Status</th>
-                                    <th>Amount</th>
                                     <th>Added By</th>
                                     <th>Action</th>
                                 </tr>
