@@ -42,7 +42,7 @@
   <a href="#"><i class="fas fa-box"></i> <span>Manage Packages</span></a>
   <ul>
       <li class="<?php if($page=='list-package'){ echo 'active'; }?>"><a href="list-package.php"><i class="fas fa-arrow-right"></i> List Packages</a></li>
-      <li class="<?php if($page=='Add Package'){ echo 'active'; }?>"><a href="Add Package.php"><i class="fas fa-arrow-right"></i> Add Package</a></li>
+      <li class="<?php if($page=='Add Package'){ echo 'active'; }?>"><a href="add-package.php"><i class="fas fa-arrow-right"></i> Add Package</a></li>
   </ul>
 </li>
     
