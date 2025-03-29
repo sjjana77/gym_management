@@ -201,7 +201,7 @@ header('location:../index.php');
       <div class="controls">
         <div class="input-append">
           <span class="add-on">₹</span> 
-          <input type="number" placeholder="50" name="amount" class="span11">
+          <input type="number" placeholder="50" name="total_amount" class="span11">
         </div>
       </div>
     </div>
@@ -311,13 +311,35 @@ function resetMenu() {
    document.gomenu.selector.selectedIndex = 2;
 }
 </script>
-<script>
-  document.querySelector('input[name="pay_amount"]').addEventListener('input', function() {
-    let total = document.querySelector('input[name="amount"]').value;
-    let pay = this.value;
-    let remaining = total - pay;
-    document.querySelector('input[name="remaining_amount"]').value = remaining > 0 ? remaining : 0;
-  });
+<script> 
+  document.addEventListener("DOMContentLoaded", function () {
+    let totalInput = document.querySelector('input[name="total_amount"]'); // Updated
+    let payInput = document.querySelector('input[name="pay_amount"]');
+    let remainingInput = document.querySelector('input[name="remaining_amount"]');
+
+    if (!totalInput || !payInput || !remainingInput) {
+        console.error("One or more input fields not found!");
+        return;
+    }
+
+    function updateRemainingAmount() {
+        let total = parseFloat(totalInput.value) || 0;
+        let pay = parseFloat(payInput.value) || 0;
+        let remaining = total - pay;
+
+        console.log("Total Amount:", total);
+        console.log("Pay Amount:", pay);
+        console.log("Remaining Amount:", remaining);
+
+        remainingInput.value = remaining > 0 ? remaining : 0;
+    }
+
+    totalInput.addEventListener('input', updateRemainingAmount);
+    payInput.addEventListener('input', updateRemainingAmount);
+});
 </script>
+
+
+
 </body>
 </html>
