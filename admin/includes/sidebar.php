@@ -46,7 +46,12 @@
   </ul>
 </li>
     
-     
+<li class="<?php if($page=='transaction'){ echo 'active'; }?>">
+    <a href="transaction.php">
+        <i class="fas fa-receipt"></i> <span>Transactions</span>
+    </a>
+</li>
+
    
     <!-- Visit codeastro.com for more projects -->
   </ul>

@@ -190,7 +190,43 @@ header('location:../index.php');
               </div>
             </div>
             
-          
+            <div class="widget-title"> 
+  <span class="icon"><i class="fas fa-align-justify"></i></span>
+  <h5>Transaction Details</h5>
+</div>
+<div class="widget-content nopadding">
+  <div class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label">Total Amount</label>
+      <div class="controls">
+        <div class="input-append">
+          <span class="add-on">₹</span> 
+          <input type="number" placeholder="50" name="amount" class="span11">
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Pay Amount</label>
+      <div class="controls">
+        <div class="input-append">
+          <span class="add-on">₹</span> 
+          <input type="number" placeholder="0" name="pay_amount" class="span11">
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Remaining Amount</label>
+      <div class="controls">
+        <div class="input-append">
+          <span class="add-on">₹</span> 
+          <input type="number" placeholder="0" name="remaining_amount" class="span11" readonly>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
             
             <div class="form-actions text-center">
               <button type="submit" class="btn btn-success">Submit Member Details</button>
@@ -274,6 +310,14 @@ header('location:../index.php');
 function resetMenu() {
    document.gomenu.selector.selectedIndex = 2;
 }
+</script>
+<script>
+  document.querySelector('input[name="pay_amount"]').addEventListener('input', function() {
+    let total = document.querySelector('input[name="amount"]').value;
+    let pay = this.value;
+    let remaining = total - pay;
+    document.querySelector('input[name="remaining_amount"]').value = remaining > 0 ? remaining : 0;
+  });
 </script>
 </body>
 </html>
