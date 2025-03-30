@@ -62,3 +62,46 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("customModal2");
+    const closeModal = document.getElementById("closeModal2");
+    const dateInput = document.getElementById("date");
+
+    let today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    document.querySelectorAll(".renewal-btn").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            // document.getElementById("members_id").value = this.dataset.id;
+
+            dateInput.value = new Date().toISOString().split('T')[0];
+
+            modal.style.display = "flex"; // Show modal
+        });
+    });
+
+    closeModal.addEventListener("click", function () {
+        modal.style.display = "none"; // Hide modal
+    });
+
+    document.getElementById("editMemberForm2").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+
+        fetch("actions/transaction-entry.php", {
+            method: "POST",
+            body: formData,
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert("Transaction Successfull!");
+                modal.style.display = "none";
+                location.reload();
+            })
+            .catch(error => {
+                alert("Error updating member.");
+            });
+    });
+});
