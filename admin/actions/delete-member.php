@@ -17,7 +17,7 @@ $result=mysqli_query($con,$qry);
 
 if($result){
     echo"DELETED";
-    header('Location:../remove-member.php');
+    header('Location:../members.php');
 }else{
     echo"ERROR!!";
 }
