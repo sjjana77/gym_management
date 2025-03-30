@@ -162,7 +162,7 @@ include 'getPackages_Info.php';
                         ?>
                       </select>
                     </div>
-
+                        <input type="hidden" name="package_duration" id="package_duration" />
                   </div>
                   <div class="control-group">
                     <label class="control-label">Package Amount</label>
@@ -290,7 +290,9 @@ include 'getPackages_Info.php';
 
         if (selectedPackage) {
           $("#package_amount").val(selectedPackage.package_amount);
+          $("#package_duration").val(selectedPackage.package_duration);
         } else {
+          $("#package_duration").val(0);
           $("#package_amount").val("");
         }
 

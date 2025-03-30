@@ -78,7 +78,6 @@ if (!isset($_SESSION['user_id'])) {
         $payment_mode = $_POST["payment_mode"];
         $status = $pending_amount == 0 ? 2 : ($pending_amount > 0 ? 1 : 0);
         $created_by = $_SESSION["user_id"];
-
         $password = md5($password);
 
         $totalamount = 0;
@@ -91,7 +90,10 @@ if (!isset($_SESSION['user_id'])) {
       
         if ($result) {
           $inserted_id = mysqli_insert_id($conn);
-          $qry = "INSERT INTO packages_data(members_id,package_id,effective_from,package_amount,discount,pay_amount,pending_amount,pay_status,created_by) values ('$inserted_id','$package_id','$dor','$package_amount','$discount','$pay_amount','$pending_amount','$status','$created_by')";
+          $package_duration = $_POST['package_duration'];
+          // $end_date = date('Y-m-d', strtotime($dor . " + $package_duration days")); //count after a day
+          $end_date = date('Y-m-d', strtotime($dor . " + " . ($package_duration - 1) . " days"));
+          $qry = "INSERT INTO packages_data(members_id,package_id,effective_from,end_date,package_amount,discount,pay_amount,pending_amount,pay_status,created_by) values ('$inserted_id','$package_id','$dor','$end_date','$package_amount','$discount','$pay_amount','$pending_amount','$status','$created_by')";
           $result = mysqli_query($conn, $qry); //query executes
           if ($result) {
             $_POST['package_data_id'] = mysqli_insert_id($conn);

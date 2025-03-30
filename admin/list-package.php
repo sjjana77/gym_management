@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include '../includes/db_connect.php'; // Include DB connection
+include 'constants.php';
 
 ?>
 
@@ -73,6 +74,7 @@ include '../includes/db_connect.php'; // Include DB connection
                                 $result = mysqli_query($conn, $query);
                                 $sno = 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
+                                    $package_types = $pakage_type->{$row['package_type']};
                                     echo "<tr>";
                                     echo "<td>{$sno}</td>";
                                     echo "<td>{$row['package_name']}</td>";
@@ -80,8 +82,7 @@ include '../includes/db_connect.php'; // Include DB connection
                                     echo "<td>{$row['package_duration']} Months</td>";
                                     echo "<td>{$row['package_service']}</td>";
                                     echo "<td>{$row['package_amount']}</td>";
-                                    echo "<td>{$row['package_type']}</td>";
-                                    echo "<td>{$row['package_status']}</td>";
+                                    echo "<td>{$package_types}</td>";
                                     echo "<td>{$row['created_by']}</td>";
                                     //echo "<td><span class='label " . ($row['status'] == 'Active' ? 'label-success' : 'label-danger') . "'>{$row['status']}</span></td>";
                                    // echo "<td>$ {$row['amount']}</td>";

@@ -26,7 +26,7 @@ function insertTransaction($conn, $postData)
     }
 
     // Bind parameters
-    $stmt->bind_param("iiiiiiiiss", $package_data_id, $members_id, $package_amount, $cur_pending_amount, $package_discount, $cur_pay_amount, $cur_pay_status, $payment_mode, $date, $created_by);
+    $stmt->bind_param("iiiiiiisss", $package_data_id, $members_id, $package_amount, $cur_pending_amount, $package_discount, $cur_pay_amount, $cur_pay_status, $payment_mode, $date, $created_by);
 
     // Execute the query
     if ($stmt->execute()) {

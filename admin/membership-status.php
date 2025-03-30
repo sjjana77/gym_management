@@ -56,7 +56,7 @@ if (!isset($_SESSION['user_id'])) {
             <div class='widget-content nopadding'>
               <?php
               include "dbcon.php";
-              $qry = "SELECT m.*, pd.pay_amount, pi.package_name FROM members as m 
+              $qry = "SELECT m.*, pd.pay_amount, pi.package_name, pd.package_amount, pd.discount, pd.pay_amount, pd.pending_amount, pd.end_date, pd.effective_from FROM members as m 
                 LEFT JOIN packages_data AS pd ON pd.id = ( SELECT MAX(pd_inner.id) FROM packages_data AS pd_inner WHERE pd_inner.members_id = m.user_id ) 
                 LEFT JOIN packages_info AS pi on pi.id = pd.package_id 
                 WHERE m.is_obsolete = 0 ORDER BY m.user_id DESC";
@@ -68,9 +68,16 @@ if (!isset($_SESSION['user_id'])) {
                     <th>Sno</th>
                     <th>User ID</th>
                     <th>Name</th>
-                    <th>Contact Number</th>
+                    <th>Contact</th>
                     <th>Package</th>
+                    <th>Package Amount</th>
+                    <th>Discount</th>
+                    <th>Amount Payable</th>
                     <th>Amount Paid</th>
+                    <th>Remaining Amount</th>
+                    <th>End Date</th>
+                    <th>Days Left</th>
+                    <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -78,13 +85,33 @@ if (!isset($_SESSION['user_id'])) {
                   <?php
                   $cnt = 1;
                   while ($row = mysqli_fetch_array($result)) {
+                    $amount_payable = $row['package_amount'] - $row['discount'];
+                    if (strtotime($row['end_date'])) {
+                      $today = new DateTime(); // Get today's date
+                      $end_date = new DateTime($row['end_date']);
+                      if ($today > $end_date) {
+                        $day_left = "-"; // If the end date has passed, return "-"
+                      } else {
+                        $day_left = $today->diff($end_date)->days - 1;
+                      }
+                    } else {
+                      $day_left = "-"; // If the end_date is invalid, return "-"
+                    }
+                    $status = $day_left > 0 ? 'Active' : 'Expired';
                     echo "<tr>
                         <td>{$cnt}</td>
                         <td>{$row['user_id']}</td>
                         <td>{$row['fullname']}</td>
                         <td>{$row['contact']}</td>
                         <td>{$row['package_name']}</td>
-                        <td>₹{$row['pay_amount']}</td>        
+                        <td>₹{$row['package_amount']}</td>
+                        <td>₹{$row['discount']}</td>
+                        <td>₹{$amount_payable}</td>
+                        <td>₹{$row['pay_amount']}</td>
+                        <td>₹{$row['pending_amount']}</td>
+                        <td>{$row['end_date']}</td>
+                        <td>{$day_left}</td>
+                        <td>{$status}</td>
                         <td>
                           <div class='btn-group'>
                             <button class='btn btn-primary dropdown-toggle action-btn' data-bs-toggle='dropdown'>
@@ -113,29 +140,37 @@ if (!isset($_SESSION['user_id'])) {
   <div id="customModal" class="modal-overlay">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">&times;</span>
-      <h2>Edit Member</h2>
+      <h2>Pay Amount</h2>
       <form id="editMemberForm">
         <input type="hidden" id="editMemberId" name="user_id">
         <div class="form-group">
-          <label for="editFullName">Full Name</label>
-          <input type="text" id="editFullName" name="fullname" required>
+          <label for="editFullName">Date </label>
+          <input type="date" id="" name="fullname" required>
         </div>
         <div class="form-group">
-          <label for="editGender">Gender</label>
-          <select id="editGender" name="gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+          <label for="editFullName">package amount </label>
+          <input type="number" name="fullname" value="2000" readonly>
         </div>
         <div class="form-group">
-          <label for="editContact">Contact</label>
-          <input type="text" id="editContact" name="contact" required>
+          <label for="editFullName">Discount</label>
+          <input type="number" name="fullname" value="20" readonly>
         </div>
         <div class="form-group">
-          <label for="editAddress">Address</label>
-          <textarea id="editAddress" name="address" required></textarea>
+          <label for="editFullName">Amount paid</label>
+          <input type="number" name="fullname">
         </div>
+
+        <div class="form-group">
+          <label for="editFullName">Pay Amount</label>
+          <input type="number" name="fullname">
+        </div>
+
+        <div class="form-group">
+          <label for="editFullName">Remaining Amount </label>
+          <input type="number" name="fullname" readonly>
+        </div>
+
+
         <button type="submit" class="submit-btn">Update Member</button>
       </form>
     </div>
@@ -147,6 +182,14 @@ if (!isset($_SESSION['user_id'])) {
 
   <script>
     $(document).ready(function () {
+
+      $("#cur_pay_amount").change(function () {
+        let packageAmount = $("#package_amount").val() || 0;
+        let discount = parseFloat($('input[name="fullname"]').eq(2).val()) || 0; // Discount
+        let amountPaid = parseFloat($(this).val()) || 0; // Amount Paid
+
+        let remainingAmount = (packageAmount - discount) - amountPaid;
+      })
 
       // Initialize DataTable
       var table = $('#memberTable').DataTable({
@@ -262,11 +305,7 @@ if (!isset($_SESSION['user_id'])) {
         button.addEventListener("click", function (e) {
           e.preventDefault();
 
-          document.getElementById("editMemberId").value = this.dataset.id;
-          document.getElementById("editFullName").value = this.dataset.fullname;
-          document.getElementById("editGender").value = this.dataset.gender;
-          document.getElementById("editContact").value = this.dataset.contact;
-          document.getElementById("editAddress").value = this.dataset.address;
+          // document.getElementById("editMemberId").value = this.dataset.id;
 
           modal.style.display = "flex"; // Show modal
         });
