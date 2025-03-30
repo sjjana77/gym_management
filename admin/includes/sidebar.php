@@ -51,7 +51,11 @@
         <i class="fas fa-receipt"></i> <span>Transactions</span>
     </a>
 </li>
-
+<li class="<?php if($page=='membershipstatus'){ echo 'active'; }?>">
+    <a href="membershipstatus.php">
+        <i class="fas fa-receipt"></i> <span>Membership Status</span>
+    </a>
+</li>
    
     <!-- Visit codeastro.com for more projects -->
   </ul>
