@@ -65,20 +65,27 @@ include '../includes/db_connect.php'; // Include DB connection
                             </thead>
                             <tbody>
                                 <?php
-                                $query = "SELECT * FROM packages_info 
-                                          where is_obsolete = 0
-                                          ORDER BY id DESC";
+                                $query = "SELECT p.*, a.username 
+                                          from packages_info 
+                                          as p
+                                          Left Join admin as a on a.username=p.created_on
+                                          where p.is_obsolete = 0";
                                 $result = mysqli_query($conn, $query);
                                 $sno = 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     echo "<tr>";
                                     echo "<td>{$sno}</td>";
                                     echo "<td>{$row['package_name']}</td>";
+                                    echo "<td>{$row['package_description']}</td>";
                                     echo "<td>{$row['package_duration']} Months</td>";
+                                    echo "<td>{$row['package_service']}</td>";
+                                    echo "<td>{$row['package_amount']}</td>";
                                     echo "<td>{$row['package_type']}</td>";
-                                    echo "<td><span class='label " . ($row['status'] == 'Active' ? 'label-success' : 'label-danger') . "'>{$row['status']}</span></td>";
-                                    echo "<td>$ {$row['amount']}</td>";
-                                    echo "<td>{$row['username']}</td>";
+                                    echo "<td>{$row['package_status']}</td>";
+                                    echo "<td>{$row['created_by']}</td>";
+                                    //echo "<td><span class='label " . ($row['status'] == 'Active' ? 'label-success' : 'label-danger') . "'>{$row['status']}</span></td>";
+                                   // echo "<td>$ {$row['amount']}</td>";
+                                   // echo "<td>{$row['username']}</td>";
                                     echo "<td>
                                             <div class='btn-group'>
                                                 <button class='btn btn-primary dropdown-toggle' data-toggle='dropdown'>Action <span class='caret'></span></button>
