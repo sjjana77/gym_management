@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include '../includes/db_connect.php'; // Include DB connection
+include 'dbcon.php'; // Include DB connection
 ?>
 
 <!DOCTYPE html>
