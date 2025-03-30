@@ -12,7 +12,7 @@ function insertTransaction($conn, $postData)
     $cur_pay_status = $postData['cur_pay_status'] ?? null;
     $payment_mode = $postData['payment_mode'] ?? null;
     $date = $postData['date'] ?? date('Y-m-d'); // Default to today if not provided
-    $created_by = $postData['created_by'] ?? 'system'; // Default value
+    $created_by = $postData['created_by'] ?? $_SESSION['user_id']; // Default value
 
     // SQL query for insertion
     $query = "INSERT INTO transactions 
@@ -39,5 +39,39 @@ function insertTransaction($conn, $postData)
     $stmt->close();
 }
 
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    session_start();
+    include "dbcon.php";
+    $result = insertTransaction($con, $_POST);
+    if ($result === "Transaction inserted successfully!") {
+        // Extract values from $_POST
+        $package_data_id = $_POST['package_data_id'] ?? null;
+        $cur_pay_amount = $_POST['cur_pay_amount'] ?? null;
+        $cur_pending_amount = $_POST['cur_pending_amount'] ?? null;
+        $status = ($cur_pending_amount == 0) ? 2 : 1; // If no pending amount, set status to 2 else 1
+
+        // Prepare update query
+        $updateQuery = "UPDATE packages_data SET pay_amount = ?, cur_pending_amount = ?, status = ? WHERE id = ?";
+        $updateStmt = $con->prepare($updateQuery);
+
+        if ($updateStmt === false) {
+            die("Update prepare failed: " . $con->error);
+        }
+
+        // Bind parameters
+        $updateStmt->bind_param("iiii", $cur_pay_amount, $cur_pending_amount, $status, $package_data_id);
+
+        // Execute update query
+        if ($updateStmt->execute()) {
+            echo "Transaction inserted and package updated successfully!";
+        } else {
+            echo "Error updating package: " . $updateStmt->error;
+        }
+
+        $updateStmt->close();
+    } else {
+        echo "Error inserting transaction: " . $result;
+    }
+}
 
 ?>

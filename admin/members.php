@@ -23,7 +23,17 @@ if (!isset($_SESSION['user_id'])) {
   <link rel="stylesheet" href="../css/jquery.gritter.css" />
   <link rel="stylesheet" href="../css/custom.css" />
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+  <style>
+    select[name='memberTable_length'] {
+      position: relative !important;
+      top: 5px !important;
+    }
 
+    #memberTable_filter {
+      position: relative !important;
+      top: 5px !important;
+    }
+  </style>
 </head>
 
 <body>

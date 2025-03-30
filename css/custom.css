@@ -1,3 +1,13 @@
+select[name='memberTable_length'] {
+    position: relative !important;
+    top: 5px !important;
+}
+
+#memberTable_filter {
+    position: relative !important;
+    top: 5px !important;
+}
+
 .dataTables_filter {
     position: relative;
     top: 11px;

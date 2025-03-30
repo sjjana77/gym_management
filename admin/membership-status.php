@@ -320,7 +320,7 @@ if (!isset($_SESSION['user_id'])) {
 
         let formData = new FormData(this);
 
-        fetch("actions/update-member.php", {
+        fetch("actions/transaction-entry.php", {
           method: "POST",
           body: formData,
         })
