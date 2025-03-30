@@ -183,15 +183,21 @@ if (!isset($_SESSION['user_id'])) {
         fixedHeader: true,
         paging: true,
         columnDefs: [
-          { targets: "_all", className: "dt-left" }  // Applies left alignment to all columns
+          { targets: "_all", className: "dt-left" }  // Align all columns to left
         ]
       });
 
+      // Clone header row for search inputs
+      $('#memberTable thead tr').clone(true).addClass('filters').appendTo('#memberTable thead');
+
       // Add filtering inputs
-      $('#memberTable thead tr').clone(true).appendTo('#memberTable thead');
-      $('#memberTable thead tr:eq(1) th').each(function (i) {
+      $('#memberTable thead tr.filters th').each(function (i) {
         var title = $(this).text();
         $(this).html('<input type="text" style="width:100%;display:block;color:#000;" placeholder="' + title + '" />');
+
+        $('input', this).on('click', function (e) {
+          e.stopPropagation(); // Prevent sorting when clicking input field
+        });
 
         $('input', this).on('keyup change', function () {
           if (table.column(i).search() !== this.value) {
@@ -201,6 +207,11 @@ if (!isset($_SESSION['user_id'])) {
               .draw();
           }
         });
+      });
+
+      // Disable sorting on the cloned filter row
+      table.columns().every(function () {
+        $(this.header()).removeClass('sorting sorting_asc sorting_desc');
       });
       // Fix Bootstrap dropdown inside DataTables
       $(document).on("click", ".dropdown-toggle", function (e) {
