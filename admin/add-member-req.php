@@ -72,9 +72,10 @@ if (!isset($_SESSION['user_id'])) {
         $contact = $_POST["contact"];
         $package_id = $_POST["package_id"];
         $package_amount = $_POST["package_amount"];
-        $discount = isset($_POST["discount"]) ? $_POST["discount"] : "";
+        $discount = isset($_POST["package_discount"]) ? $_POST["package_discount"] : "";
         $pay_amount = $_POST["pay_amount"];
         $pending_amount = $_POST["pending_amount"];
+        $payment_mode = $_POST["payment_mode"];
         $status = $pending_amount == 0 ? 2 : ($pending_amount > 0 ? 1 : 0);
         $created_by = $_SESSION["user_id"];
 
@@ -83,6 +84,7 @@ if (!isset($_SESSION['user_id'])) {
         $totalamount = 0;
         // <!-- Visit codeastro.com for more projects -->
         include 'dbcon.php';
+        include 'actions/add-member-req.php';
         //code after connection is successfull
         $qry = "INSERT INTO members(fullname,username,password,dor,gender,services,amount,p_year,paid_date,plan,address,contact) values ('$fullname','$username','$password','$dor','$gender','$services','$totalamount','$p_year','$paid_date','$plan','$address','$contact')";
         $result = mysqli_query($conn, $qry); //query executes
@@ -91,6 +93,15 @@ if (!isset($_SESSION['user_id'])) {
           $inserted_id = mysqli_insert_id($conn);
           $qry = "INSERT INTO packages_data(members_id,package_id,effective_from,package_amount,discount,pay_amount,pending_amount,pay_status,created_by) values ('$inserted_id','$package_id','$dor','$package_amount','$discount','$pay_amount','$pending_amount','$status','$created_by')";
           $result = mysqli_query($conn, $qry); //query executes
+          if ($result) {
+            $_POST['package_data_id'] = mysqli_insert_id($conn);
+            $_POST['members_id'] = $inserted_id;
+            $_POST['cur_pending_amount'] = $pending_amount;
+            $_POST['cur_pay_amount'] = $pay_amount;
+            $_POST['cur_pay_status'] = $status;
+            $_POST['created_by'] = $_SESSION['user_id'];
+            insertTransaction($conn, $_POST);
+          }
         }
         echo "<script>window.location.href='members.php';</script>";
         exit();

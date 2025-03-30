@@ -179,7 +179,7 @@ include 'getPackages_Info.php';
                     <div class="controls">
                       <div class="input-append">
                         <span class="add-on">₹</span>
-                        <input type="number" id="discount_amount" name="discount_amount" class="span11">
+                        <input type="number" id="package_discount" name="package_discount" class="span11">
                       </div>
                     </div>
                   </div>
@@ -297,13 +297,13 @@ include 'getPackages_Info.php';
         calculateBalance();
       });
 
-      $("#pay_amount, #package_amount, #discount_amount").on("input", function () {
+      $("#pay_amount, #package_amount, #package_discount").on("input", function () {
         calculateBalance();
       });
 
       function calculateBalance() {
         var packageAmount = parseFloat($("#package_amount").val()) || 0; // Package price
-        var discountAmount = parseFloat($("#discount_amount").val()) || 0; // Discount
+        var discountAmount = parseFloat($("#package_discount").val()) || 0; // Discount
         var payAmount = parseFloat($("#pay_amount").val()) || 0; // Paid amount
 
         var totalAfterDiscount = packageAmount - discountAmount; // Amount after discount
