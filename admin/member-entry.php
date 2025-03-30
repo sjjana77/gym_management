@@ -204,7 +204,21 @@ include 'getPackages_Info.php';
                     </div>
                   </div>
 
-
+                  <div class="control-group">
+                     <label class="control-label">Payment Method</label>
+                     <div class="controls">
+                        <select name="payment_method" required="required">
+                              <option value="">Select Payment Method</option>
+                              <option value="Card">Card</option>
+                              <option value="Cash">Cash</option>
+                              <option value="POS">POS</option>
+                              <option value="Google Pay">Google Pay</option>
+                              <option value="Paytm">Paytm</option>
+                              <option value="Amazon Pay">Amazon Pay</option>
+                              <option value="Net Banking">Net Banking</option>
+                        </select>
+                      </div>
+                  </div>
 
 
                   <div class="form-actions text-center">
