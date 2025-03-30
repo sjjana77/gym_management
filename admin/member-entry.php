@@ -207,7 +207,7 @@ include 'getPackages_Info.php';
                   <div class="control-group">
                      <label class="control-label">Payment Method</label>
                      <div class="controls">
-                        <select name="payment_method" required="required">
+                        <select name="payment_mode" required="required">
                               <option value="">Select Payment Method</option>
                               <option value="Card">Card</option>
                               <option value="Cash">Cash</option>

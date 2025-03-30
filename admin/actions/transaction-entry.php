@@ -15,7 +15,7 @@ function insertTransaction($conn, $postData)
     $created_by = $postData['created_by'] ?? 'system'; // Default value
 
     // SQL query for insertion
-    $query = "INSERT INTO transaction 
+    $query = "INSERT INTO transactions 
         (package_data_id, members_id, package_amount, cur_pending_amount, package_discount, cur_pay_amount, cur_pay_status, payment_mode, date, created_by) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
