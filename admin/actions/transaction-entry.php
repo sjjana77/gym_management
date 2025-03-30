@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         // Extract values from $_POST
         $package_data_id = $_POST['package_data_id'] ?? null;
         $cur_pay_amount = $_POST['cur_pay_amount'] ?? null;
+        $cur_pay_amount += $_POST['amount_paid'];
         $cur_pending_amount = $_POST['cur_pending_amount'] ?? null;
         $status = ($cur_pending_amount == 0) ? 2 : 1; // If no pending amount, set status to 2 else 1
 

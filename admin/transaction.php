@@ -103,14 +103,21 @@ include 'dbcon.php'; // Include DB connection
                                         echo "<td>{$row['package_name']}</td>";
                                         echo "<td>₹{$row['package_amount']}</td>";
                                         echo "<td>₹{$row['discount']}</td>";
-                                        echo "<td>₹{$row['pay_amount']}</td>";
+                                        echo "<td>₹{$row['cur_pay_amount']}</td>";
                                         echo "<td>₹{$row['pending_amount']}</td>";
                                         echo "<td>{$status}</td>";
                                         echo "<td>
                                             <div class='btn-group'>
                                                 <button class='btn btn-primary dropdown-toggle' data-toggle='dropdown'>Action <span class='caret'></span></button>
                                                 <ul class='dropdown-menu'>
-                                                    <li><a href='view-transaction.php?id={$row['id']}'><i class='fas fa-eye'></i> View</a></li>
+                                                   <li><a class='dropdown-item edit-btn' href='#'
+                                                    data-id='{$row['members_id']}'
+                                                    data-package_amount='{$row['package_amount']}'
+                                                    data-package_discount='{$row['discount']}'
+                                                    data-amount_paid='{$row['pay_amount']}'
+                                                    data-package_data_id='{$row['package_data_id']}'
+                                                    data-cur_pending_amount='{$row['pending_amount']}'
+                                                    ><i class='fas fa-money-bill'></i> Pay Amount</a></li>
                                                     <li><a href='edit-transaction.php?id={$row['id']}'><i class='fas fa-edit'></i> Edit</a></li>
                                                     <li><a href='delete-transaction.php?id={$row['id']}' onclick='return confirm(\"Are you sure?\");'><i class='fas fa-trash'></i> Delete</a></li>
                                                     <li><a href='renew-transaction.php?id={$row['id']}'><i class='fas fa-redo'></i> Renew</a></li>
@@ -134,6 +141,9 @@ include 'dbcon.php'; // Include DB connection
 
     <script src="../js/jquery.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <?php
+    include "pay_amount_dialog.php";
+    ?>
 </body>
 
 </html>
@@ -188,3 +198,4 @@ include 'dbcon.php'; // Include DB connection
         });
     });
 </script>
+<script src="pay_amount_modal.js"></script>
