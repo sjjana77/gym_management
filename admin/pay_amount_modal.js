@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     $("#cur_pay_amount").on("input", function () {
         let packageAmount = parseFloat($("#package_amount").val()) || 0;
