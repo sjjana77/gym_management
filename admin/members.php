@@ -179,11 +179,29 @@ if (!isset($_SESSION['user_id'])) {
     $(document).ready(function () {
       // Initialize DataTable
       var table = $('#memberTable').DataTable({
-        responsive: true,
-        autoWidth: false,
-        order: [],
+        orderCellsTop: true,
+        fixedHeader: true,
+        paging: true,
+        columnDefs: [
+          { targets: "_all", className: "dt-left" }  // Applies left alignment to all columns
+        ]
       });
 
+      // Add filtering inputs
+      $('#memberTable thead tr').clone(true).appendTo('#memberTable thead');
+      $('#memberTable thead tr:eq(1) th').each(function (i) {
+        var title = $(this).text();
+        $(this).html('<input type="text" style="width:100%;display:block;color:#000;" placeholder="' + title + '" />');
+
+        $('input', this).on('keyup change', function () {
+          if (table.column(i).search() !== this.value) {
+            table
+              .column(i)
+              .search(this.value)
+              .draw();
+          }
+        });
+      });
       // Fix Bootstrap dropdown inside DataTables
       $(document).on("click", ".dropdown-toggle", function (e) {
         $(this).next(".dropdown-menu").toggle();
