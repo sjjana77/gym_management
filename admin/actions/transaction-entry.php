@@ -42,6 +42,7 @@ function insertTransaction($conn, $postData)
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     session_start();
     include "dbcon.php";
+    $_POST['cur_pay_status'] = $_POST['cur_pending_amount'] == 0 ? 2 : 1;
     $result = insertTransaction($con, $_POST);
     if ($result === "Transaction inserted successfully!") {
         // Extract values from $_POST
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $status = ($cur_pending_amount == 0) ? 2 : 1; // If no pending amount, set status to 2 else 1
 
         // Prepare update query
-        $updateQuery = "UPDATE packages_data SET pay_amount = ?, cur_pending_amount = ?, status = ? WHERE id = ?";
+        $updateQuery = "UPDATE packages_data SET pay_amount = ?, pending_amount = ?, pay_status = ? WHERE id = ?";
         $updateStmt = $con->prepare($updateQuery);
 
         if ($updateStmt === false) {

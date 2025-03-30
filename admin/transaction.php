@@ -88,7 +88,7 @@ include 'dbcon.php'; // Include DB connection
                                     LEFT JOIN members AS m ON m.user_id = t.members_id 
                                     LEFT JOIN packages_data AS pd ON pd.id = t.package_data_id 
                                     LEFT JOIN packages_info AS pi ON pi.id = pd.package_id 
-                                    ORDER BY t.date DESC";
+                                    ORDER BY t.date, t.id DESC";
                                     $result = mysqli_query($conn, $query);
                                     $sno = 1;
                                     while ($row = mysqli_fetch_assoc($result)) {

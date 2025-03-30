@@ -67,7 +67,7 @@ if (!isset($_SESSION['user_id'])) {
             <div class='widget-content nopadding'>
               <?php
               include "dbcon.php";
-              $qry = "SELECT m.*, pd.pay_amount, pi.package_name, pd.package_amount, pd.discount, pd.pay_amount, pd.pending_amount, pd.end_date, pd.effective_from FROM members as m 
+              $qry = "SELECT m.*, pd.pay_amount, pi.package_name, pd.package_amount, pd.discount, pd.pay_amount, pd.pending_amount, pd.end_date, pd.effective_from, pd.id as package_data_id FROM members as m 
                 LEFT JOIN packages_data AS pd ON pd.id = ( SELECT MAX(pd_inner.id) FROM packages_data AS pd_inner WHERE pd_inner.members_id = m.user_id ) 
                 LEFT JOIN packages_info AS pi on pi.id = pd.package_id 
                 WHERE m.is_obsolete = 0 ORDER BY m.user_id DESC";
@@ -134,6 +134,7 @@ if (!isset($_SESSION['user_id'])) {
                             data-package_amount='{$row['package_amount']}'
                             data-package_discount='{$row['discount']}'
                             data-amount_paid='{$row['pay_amount']}'
+                            data-package_data_id='{$row['package_data_id']}'
                             data-cur_pending_amount='{$row['pending_amount']}'
                             ><i class='fas fa-money-bill'></i> Pay Amount</a></li>
                               <li><a class='dropdown-item' href='#'><i class='fas fa-sync'></i> Renewal</a></li>
@@ -160,6 +161,7 @@ if (!isset($_SESSION['user_id'])) {
       <h2>Pay Amount</h2>
       <form id="editMemberForm">
         <input type="hidden" id="members_id" name="members_id">
+        <input type="hidden" id="package_data_id" name="package_data_id">
         <div class="form-group">
           <label for="editFullName">Date </label>
           <input type="date" id="date" name="fullname" required>
@@ -207,7 +209,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
         <div class="form-group">
           <label for="editGender">Payment Mode</label>
-          <select id="payment_mode" name="payment_mode">
+          <select id="payment_mode" name="payment_mode" id="payment_mode" required>
             <option value="">Select Payment Method</option>
             <option value="Card">Card</option>
             <option value="Cash">Cash</option>
@@ -358,11 +360,13 @@ if (!isset($_SESSION['user_id'])) {
           e.preventDefault();
 
           document.getElementById("members_id").value = this.dataset.id;
+          document.getElementById("package_data_id").value = this.dataset.package_data_id;
           document.getElementById("package_amount").value = this.dataset.package_amount;
           document.getElementById("package_discount").value = this.dataset.package_discount;
           document.getElementById("amount_paid").value = this.dataset.amount_paid;
           document.getElementById("cur_pay_amount").value = this.dataset.cur_pending_amount;
-          document.getElementById("cur_pending_amount").value = 0;
+          document.getElementById("cur_pay_amount").value = this.dataset.cur_pending_amount;
+          document.getElementById("payment_mode").value = "";
 
           dateInput.value = new Date().toISOString().split('T')[0];
 
@@ -385,7 +389,7 @@ if (!isset($_SESSION['user_id'])) {
         })
           .then(response => response.text())
           .then(data => {
-            alert("Member updated successfully!");
+            alert("Transaction Successfull!");
             modal.style.display = "none";
             location.reload();
           })
