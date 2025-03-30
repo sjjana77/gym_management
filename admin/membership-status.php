@@ -118,7 +118,13 @@ if (!isset($_SESSION['user_id'])) {
                               Action <span class='caret'></span>
                             </button>
                             <ul class='dropdown-menu'>
-                            <li><a class='dropdown-item edit-btn' href='#'><i class='fas fa-money-bill'></i> Pay Amount</a></li>
+                            <li><a class='dropdown-item edit-btn' href='#'
+                            data-id='{$row['user_id']}'
+                            data-package_amount='{$row['package_amount']}'
+                            data-package_discount='{$row['discount']}'
+                            data-amount_paid='{$row['pay_amount']}'
+                            data-cur_pending_amount='{$row['pending_amount']}'
+                            ><i class='fas fa-money-bill'></i> Pay Amount</a></li>
                               <li><a class='dropdown-item' href='#'><i class='fas fa-sync'></i> Renewal</a></li>
                               <li><a class='dropdown-item' href='#'><i class='fas fa-history'></i> Renewal History</a></li>
                               <li><a class='dropdown-item' href='#'><i class='fas fa-receipt'></i> Transactions</a></li>
@@ -142,34 +148,46 @@ if (!isset($_SESSION['user_id'])) {
       <span class="close-btn" id="closeModal">&times;</span>
       <h2>Pay Amount</h2>
       <form id="editMemberForm">
-        <input type="hidden" id="editMemberId" name="user_id">
+        <input type="hidden" id="members_id" name="members_id">
         <div class="form-group">
           <label for="editFullName">Date </label>
-          <input type="date" id="" name="fullname" required>
+          <input type="date" id="date" name="fullname" required>
         </div>
         <div class="form-group">
           <label for="editFullName">package amount </label>
-          <input type="number" name="fullname" value="2000" readonly>
+          <input type="number" id="package_amount" name="package_amount" value="2000" readonly>
         </div>
         <div class="form-group">
           <label for="editFullName">Discount</label>
-          <input type="number" name="fullname" value="20" readonly>
+          <input type="number" id="package_discount" name="package_discount" value="20" readonly>
         </div>
         <div class="form-group">
           <label for="editFullName">Amount paid</label>
-          <input type="number" name="fullname">
+          <input type="number" id="amount_paid" name="amount_paid" readonly>
         </div>
 
         <div class="form-group">
           <label for="editFullName">Pay Amount</label>
-          <input type="number" name="fullname">
+          <input type="number" id="cur_pay_amount" name="cur_pay_amount" >
         </div>
 
         <div class="form-group">
           <label for="editFullName">Remaining Amount </label>
-          <input type="number" name="fullname" readonly>
+          <input type="number"  id="cur_pending_amount" name="cur_pending_amount" readonly>
         </div>
-
+        <div class="form-group">
+          <label for="editGender">Payment Mode</label>
+          <select id="payment_mode" name="payment_mode">
+          <option value="">Select Payment Method</option>
+                              <option value="Card">Card</option>
+                              <option value="Cash">Cash</option>
+                              <option value="POS">POS</option>
+                              <option value="Google Pay">Google Pay</option>
+                              <option value="Paytm">Paytm</option>
+                              <option value="Amazon Pay">Amazon Pay</option>
+                              <option value="Net Banking">Net Banking</option>
+          </select>
+        </div>
 
         <button type="submit" class="submit-btn">Update Member</button>
       </form>
@@ -183,23 +201,16 @@ if (!isset($_SESSION['user_id'])) {
   <script>
     $(document).ready(function () {
 
-      $("#cur_pay_amount").change(function () {
-        let packageAmount = $("#package_amount").val() || 0;
-        let discount = parseFloat($('input[name="fullname"]').eq(2).val()) || 0; // Discount
-        let amountPaid = parseFloat($(this).val()) || 0; // Amount Paid
+      $("#cur_pay_amount").on("input", function () {
+    let packageAmount = parseFloat($("#package_amount").val()) || 0;
+    let discount = parseFloat($("#package_discount").val()) || 0;
+    let amountPaid = parseFloat($("#amount_paid").val()) || 0;
+    let payAmount = parseFloat($(this).val()) || 0;
 
-        let remainingAmount = (packageAmount - discount) - amountPaid;
-      })
+    let remainingAmount = (packageAmount - discount) - (amountPaid + payAmount);
+    $("#cur_pending_amount").val(remainingAmount);
+});
 
-      // Initialize DataTable
-      var table = $('#memberTable').DataTable({
-        orderCellsTop: true,
-        fixedHeader: true,
-        paging: true,
-        columnDefs: [
-          { targets: "_all", className: "dt-left" }  // Align all columns to left
-        ]
-      });
 
       // Clone header row for search inputs
       $('#memberTable thead tr').clone(true).addClass('filters').appendTo('#memberTable thead');
@@ -288,9 +299,9 @@ if (!isset($_SESSION['user_id'])) {
       });
 
       function updateRemainingAmount() {
-        let packageAmount = parseFloat($('#packageAmount').val()) || 0;
-        let discount = parseFloat($('#discount').val()) || 0;
-        let amountPaid = parseFloat($('#amountPaid').val()) || 0;
+        let packageAmount = parseFloat($('#package_amount').val()) || 0;
+        let discount = parseFloat($('#package_discount').val()) || 0;
+        let amountPaid = parseFloat($('#amount_paid').val()) || 0;
         let payAmount = parseFloat($('#payAmount').val()) || 0;
         let remaining = (packageAmount - discount) - (amountPaid + payAmount);
         $('#remainingAmount').val(remaining);
@@ -300,12 +311,22 @@ if (!isset($_SESSION['user_id'])) {
     document.addEventListener("DOMContentLoaded", function () {
       const modal = document.getElementById("customModal");
       const closeModal = document.getElementById("closeModal");
+      const dateInput = document.getElementById("date");
 
+      let today = new Date().toISOString().split('T')[0];
+       dateInput.value = today;
       document.querySelectorAll(".edit-btn").forEach(button => {
         button.addEventListener("click", function (e) {
           e.preventDefault();
 
-          // document.getElementById("editMemberId").value = this.dataset.id;
+          document.getElementById("members_id").value = this.dataset.id;
+          document.getElementById("package_amount").value = this.dataset.package_amount;
+          document.getElementById("package_discount").value = this.dataset.package_discount;
+          document.getElementById("amount_paid").value = this.dataset.amount_paid;
+          document.getElementById("cur_pay_amount").value = this.dataset.cur_pending_amount;
+          document.getElementById("cur_pending_amount").value = 0;
+
+          dateInput.value = new Date().toISOString().split('T')[0];
 
           modal.style.display = "flex"; // Show modal
         });
