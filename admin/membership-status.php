@@ -154,26 +154,45 @@ if (!isset($_SESSION['user_id'])) {
           <input type="date" id="date" name="fullname" required>
         </div>
         <div class="form-group">
+        
           <label for="editFullName">package amount </label>
+          <div class="input-append">
+          <span class="add-on">₹</span>
           <input type="number" id="package_amount" name="package_amount" value="2000" readonly>
+          </div>
+         
         </div>
         <div class="form-group">
           <label for="editFullName">Discount</label>
+          <div class="input-append">
+          <span class="add-on">₹</span>
           <input type="number" id="package_discount" name="package_discount" value="20" readonly>
+          </div>
         </div>
         <div class="form-group">
           <label for="editFullName">Amount paid</label>
+          <div class="input-append">
+          <span class="add-on">₹</span>
           <input type="number" id="amount_paid" name="amount_paid" readonly>
+          </div>
         </div>
 
         <div class="form-group">
           <label for="editFullName">Pay Amount</label>
-          <input type="number" id="cur_pay_amount" name="cur_pay_amount">
+          <div class="input-append">
+          <span class="add-on">₹</span>
+          <input type="number" id="cur_pay_amount" name="cur_pay_amount" >
+          </div>
+         
         </div>
 
         <div class="form-group">
           <label for="editFullName">Remaining Amount </label>
-          <input type="number" id="cur_pending_amount" name="cur_pending_amount" readonly>
+          <div class="input-append">
+          <span class="add-on">₹</span>
+          <input type="number"  id="cur_pending_amount" name="cur_pending_amount" readonly>
+          </div>
+          
         </div>
         <div class="form-group">
           <label for="editGender">Payment Mode</label>
