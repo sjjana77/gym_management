@@ -168,24 +168,24 @@ if (!isset($_SESSION['user_id'])) {
 
         <div class="form-group">
           <label for="editFullName">Pay Amount</label>
-          <input type="number" id="cur_pay_amount" name="cur_pay_amount" >
+          <input type="number" id="cur_pay_amount" name="cur_pay_amount">
         </div>
 
         <div class="form-group">
           <label for="editFullName">Remaining Amount </label>
-          <input type="number"  id="cur_pending_amount" name="cur_pending_amount" readonly>
+          <input type="number" id="cur_pending_amount" name="cur_pending_amount" readonly>
         </div>
         <div class="form-group">
           <label for="editGender">Payment Mode</label>
           <select id="payment_mode" name="payment_mode">
-          <option value="">Select Payment Method</option>
-                              <option value="Card">Card</option>
-                              <option value="Cash">Cash</option>
-                              <option value="POS">POS</option>
-                              <option value="Google Pay">Google Pay</option>
-                              <option value="Paytm">Paytm</option>
-                              <option value="Amazon Pay">Amazon Pay</option>
-                              <option value="Net Banking">Net Banking</option>
+            <option value="">Select Payment Method</option>
+            <option value="Card">Card</option>
+            <option value="Cash">Cash</option>
+            <option value="POS">POS</option>
+            <option value="Google Pay">Google Pay</option>
+            <option value="Paytm">Paytm</option>
+            <option value="Amazon Pay">Amazon Pay</option>
+            <option value="Net Banking">Net Banking</option>
           </select>
         </div>
 
@@ -202,16 +202,24 @@ if (!isset($_SESSION['user_id'])) {
     $(document).ready(function () {
 
       $("#cur_pay_amount").on("input", function () {
-    let packageAmount = parseFloat($("#package_amount").val()) || 0;
-    let discount = parseFloat($("#package_discount").val()) || 0;
-    let amountPaid = parseFloat($("#amount_paid").val()) || 0;
-    let payAmount = parseFloat($(this).val()) || 0;
+        let packageAmount = parseFloat($("#package_amount").val()) || 0;
+        let discount = parseFloat($("#package_discount").val()) || 0;
+        let amountPaid = parseFloat($("#amount_paid").val()) || 0;
+        let payAmount = parseFloat($(this).val()) || 0;
 
-    let remainingAmount = (packageAmount - discount) - (amountPaid + payAmount);
-    $("#cur_pending_amount").val(remainingAmount);
-});
+        let remainingAmount = (packageAmount - discount) - (amountPaid + payAmount);
+        $("#cur_pending_amount").val(remainingAmount);
+      });
 
-
+      // Initialize DataTable
+      var table = $('#memberTable').DataTable({
+        orderCellsTop: true,
+        fixedHeader: true,
+        paging: true,
+        columnDefs: [
+          { targets: "_all", className: "dt-left" }  // Align all columns to left
+        ]
+      });
       // Clone header row for search inputs
       $('#memberTable thead tr').clone(true).addClass('filters').appendTo('#memberTable thead');
 
@@ -314,7 +322,7 @@ if (!isset($_SESSION['user_id'])) {
       const dateInput = document.getElementById("date");
 
       let today = new Date().toISOString().split('T')[0];
-       dateInput.value = today;
+      dateInput.value = today;
       document.querySelectorAll(".edit-btn").forEach(button => {
         button.addEventListener("click", function (e) {
           e.preventDefault();
