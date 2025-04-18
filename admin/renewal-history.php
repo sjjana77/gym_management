@@ -12,7 +12,7 @@ include 'dbcon.php'; // Include DB connection
 <html lang="en">
 
 <head>
-    <title>List Transactions</title>
+    <title>Renewal History</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
@@ -32,6 +32,9 @@ include 'dbcon.php'; // Include DB connection
             position: relative !important;
             top: 5px !important;
         }
+        .hidden{
+            display: none;
+        }
     </style>
 </head>
 
@@ -49,9 +52,21 @@ include 'dbcon.php'; // Include DB connection
         <div id="content-header">
             <div id="breadcrumb">
                 <a href="index.php" class="tip-bottom"><i class="fas fa-home"></i> Home</a>
-                <a href="#" class="current">List Transactions</a>
+                <a href="#" class="current">Renewal History</a>
             </div>
-            <h1>Transaction List</h1>
+            <?php
+            include 'dbcon.php';
+            $where = '';
+            $h1 = '';
+            $select = ',m.fullname, m.contact, m.user_id ';
+            $hidden = '';
+            if (isset($_GET['id']) && $_GET['id'] != "") {
+                $hidden = 'hidden';
+                $h1 = ' - '.$_GET['name'] . " (".$_GET["id"].")";
+                $where = " AND pd.members_id = '".$_GET["id"]."' ";
+            }
+            ?>
+            <h1>Renewal History<?= $h1 ?> </h1>
         </div>
 
         <div class="container-fluid">
@@ -61,73 +76,51 @@ include 'dbcon.php'; // Include DB connection
                     <div class="widget-box">
                         <div class="widget-title">
                             <span class="icon"><i class="fas fa-file-invoice-dollar"></i></span>
-                            <h5>Transaction Details</h5>
+                            <h5>Renewal Package Details</h5>
                         </div>
                         <div class="widget-content nopadding">
                             <table id="memberTable" class='display nowrap' style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>S.No</th>
-                                        <th>Bill Date</th>
-                                        <th>Member ID</th>
-                                        <th>Name</th>
-                                        <th>Contact</th>
+                                        <th class="<?= $hidden ?>">Member ID</th>
+                                        <th class="<?= $hidden ?>">Name</th>
+                                        <th class='<?= $hidden ?>'>Contact</th>
                                         <th>Package</th>
                                         <th>Package Amount</th>
                                         <th>Discount</th>
+                                        <th>Amount Payable</th>
                                         <th>Paid Amount</th>
                                         <th>Remaining Amount</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $query = "SELECT t.*, m.user_id, m.fullname, m.contact, pi.package_name, pd.package_amount, pd.discount, pd.pay_amount, pd.pending_amount, pd.end_date 
-                                    FROM transactions AS t 
-                                    LEFT JOIN members AS m ON m.user_id = t.members_id 
-                                    LEFT JOIN packages_data AS pd ON pd.id = t.package_data_id 
-                                    LEFT JOIN packages_info AS pi ON pi.id = pd.package_id 
-                                    ORDER BY t.date, t.id DESC";
+                                    $query = "SELECT pi.package_name, pd.package_amount, pd.discount, pd.pay_amount, pd.pending_amount, pd.effective_from, pd.end_date {$select}
+                                    FROM packages_data as pd
+                                    left join packages_info as pi on pi.id = pd.package_id
+                                    LEFT JOIN members AS m ON m.user_id = pd.members_id 
+                                    WHERE pi.id IS NOT NULL {$where}
+                                    order by pd.id desc";
                                     $result = mysqli_query($conn, $query);
                                     $sno = 1;
                                     while ($row = mysqli_fetch_assoc($result)) {
-                                        $status = ($row["cur_pay_status"] == 2) ? 'Full' :
-                                            (($row["cur_pay_status"] == 1) ? 'Partial' : 'Pending');
-                                        $pay_amount_disable = $row['pending_amount'] == 0 ? 'disabled' : '';
-                                        $renewal_disable = $row['pending_amount'] != 0 ? 'disabled' : '';
+                                        $amount_payable = $row['package_amount'] - $row['discount'];
                                         echo "<tr>";
                                         echo "<td>{$sno}</td>";
-                                        echo "<td>{$row['date']}</td>";
-                                        echo "<td>{$row['members_id']}</td>";
-                                        echo "<td>{$row['fullname']}</td>";
-                                        echo "<td>{$row['contact']}</td>";
+                                        echo "<td class='{$hidden}'>{$row['user_id']}</td>";
+                                        echo "<td class='{$hidden}'>{$row['fullname']}</td>";
+                                        echo "<td class='{$hidden}'>{$row['contact']}</td>";
                                         echo "<td>{$row['package_name']}</td>";
                                         echo "<td>₹{$row['package_amount']}</td>";
                                         echo "<td>₹{$row['discount']}</td>";
-                                        echo "<td>₹{$row['cur_pay_amount']}</td>";
+                                        echo "<td>₹{$amount_payable}</td>";
+                                        echo "<td>₹{$row['pay_amount']}</td>";
                                         echo "<td>₹{$row['pending_amount']}</td>";
-                                        echo "<td>{$status}</td>";
-                                        echo "<td>
-                                            <div class='btn-group'>
-                                                <button class='btn btn-primary dropdown-toggle' data-toggle='dropdown'>Action <span class='caret'></span></button>
-                                                <ul class='dropdown-menu'>
-                                                   <li><a class='dropdown-item edit-btn {$pay_amount_disable}' href='#'
-                                                    data-id='{$row['members_id']}'
-                                                    data-package_amount='{$row['package_amount']}'
-                                                    data-package_discount='{$row['discount']}'
-                                                    data-amount_paid='{$row['pay_amount']}'
-                                                    data-package_data_id='{$row['package_data_id']}'
-                                                    data-cur_pending_amount='{$row['pending_amount']}'
-                                                    ><i class='fas fa-money-bill'></i> Pay Amount</a></li>
-                                                    <li><a class='dropdown-item renewal-btn {$renewal_disable}' href='#'
-                                                    data-end_date='{$row['end_date']}'
-                                                    data-members_id='{$row['user_id']}'
-                                                    ><i class='fas fa-sync'></i> Renewal</a></li>
-                                                    <li><a target='_blank' class='dropdown-item' href='renewal-history.php?id={$row['user_id']}&name={$row['fullname']}'><i class='fas fa-history'></i> Renewal History</a></li>
-                                                </ul>
-                                            </div>
-                                          </td>";
+                                        echo "<td>{$row['effective_from']}</td>";
+                                        echo "<td>{$row['end_date']}</td>";
                                         echo "</tr>";
                                         $sno++;
                                     }

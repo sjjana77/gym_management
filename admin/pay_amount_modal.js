@@ -64,18 +64,18 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("customModal2");
     const closeModal = document.getElementById("closeModal2");
-    const dateInput = document.getElementById("date");
+    const dateInput = document.getElementById("renewal_date");
 
-    let today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
+
     document.querySelectorAll(".renewal-btn").forEach(button => {
         button.addEventListener("click", function (e) {
             e.preventDefault();
+            let endDate = new Date(this.dataset.end_date);
+            document.querySelector("#customModal2 #members_id").value = this.dataset.members_id;
+            endDate.setDate(endDate.getDate() + 1); // Add 1 day
 
-            // document.getElementById("members_id").value = this.dataset.id;
-
-            dateInput.value = new Date().toISOString().split('T')[0];
-
+            let formattedDate = endDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            dateInput.value = formattedDate;
             modal.style.display = "flex"; // Show modal
         });
     });
@@ -89,15 +89,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let formData = new FormData(this);
 
-        fetch("actions/transaction-entry.php", {
+        fetch("actions/renewal-package-entry.php", {
             method: "POST",
             body: formData,
         })
             .then(response => response.text())
             .then(data => {
-                alert("Transaction Successfull!");
+                alert("Package Renewed Successfull!");
                 modal.style.display = "none";
-                location.reload();
+                // location.reload();
             })
             .catch(error => {
                 alert("Error updating member.");

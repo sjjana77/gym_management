@@ -109,8 +109,8 @@ if (!isset($_SESSION['user_id'])) {
                       $day_left = "-"; // If the end_date is invalid, return "-"
                     }
                     $status = $day_left > 0 ? 'Active' : 'Expired';
-                    $pay_amount_disable = $row['pending_amount'] == 0 ? 'disabled' : ''; 
-                    $renewal_disable = $row['pending_amount'] != 0 ? 'disabled' : ''; 
+                    $pay_amount_disable = $row['pending_amount'] == 0 ? 'disabled' : '';
+                    $renewal_disable = $row['pending_amount'] != 0 ? 'disabled' : '';
                     echo "<tr>
                         <td>{$cnt}</td>
                         <td>{$row['user_id']}</td>
@@ -139,8 +139,11 @@ if (!isset($_SESSION['user_id'])) {
                             data-package_data_id='{$row['package_data_id']}'
                             data-cur_pending_amount='{$row['pending_amount']}'
                             ><i class='fas fa-money-bill'></i> Pay Amount</a></li>
-                              <li><a class='dropdown-item renewal-btn {$renewal_disable}' href='#'><i class='fas fa-sync'></i> Renewal</a></li>
-                              <li><a class='dropdown-item' href='#'><i class='fas fa-history'></i> Renewal History</a></li>
+                              <li><a class='dropdown-item renewal-btn {$renewal_disable}' href='#'
+                              data-end_date='{$row['end_date']}'
+                              data-members_id='{$row['user_id']}'
+                              ><i class='fas fa-sync'></i> Renewal</a></li>
+                              <li><a target='_blank' class='dropdown-item' href='renewal-history.php?id={$row['user_id']}&name={$row['fullname']}'><i class='fas fa-history'></i> Renewal History</a></li>
                               <li><a class='dropdown-item' href='#'><i class='fas fa-receipt'></i> Transactions</a></li>
                             </ul>
                           </div>
@@ -283,7 +286,7 @@ if (!isset($_SESSION['user_id'])) {
       }
     });
 
-    
+
   </script>
   <script src="pay_amount_modal.js"></script>
 

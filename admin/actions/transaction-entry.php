@@ -40,39 +40,41 @@ function insertTransaction($conn, $postData)
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    session_start();
-    include "dbcon.php";
-    $_POST['cur_pay_status'] = $_POST['cur_pending_amount'] == 0 ? 2 : 1;
-    $result = insertTransaction($con, $_POST);
-    if ($result === "Transaction inserted successfully!") {
-        // Extract values from $_POST
-        $package_data_id = $_POST['package_data_id'] ?? null;
-        $cur_pay_amount = $_POST['cur_pay_amount'] ?? null;
-        $cur_pay_amount += $_POST['amount_paid'];
-        $cur_pending_amount = $_POST['cur_pending_amount'] ?? null;
-        $status = ($cur_pending_amount == 0) ? 2 : 1; // If no pending amount, set status to 2 else 1
+    if ($_POST['transaction_update'] && $_POST['transaction_update'] == 1) {
+        session_start();
+        include "dbcon.php";
+        $_POST['cur_pay_status'] = $_POST['cur_pending_amount'] == 0 ? 2 : 1;
+        $result = insertTransaction($con, $_POST);
+        if ($result === "Transaction inserted successfully!") {
+            // Extract values from $_POST
+            $package_data_id = $_POST['package_data_id'] ?? null;
+            $cur_pay_amount = $_POST['cur_pay_amount'] ?? null;
+            $cur_pay_amount += $_POST['amount_paid'];
+            $cur_pending_amount = $_POST['cur_pending_amount'] ?? null;
+            $status = ($cur_pending_amount == 0) ? 2 : 1; // If no pending amount, set status to 2 else 1
 
-        // Prepare update query
-        $updateQuery = "UPDATE packages_data SET pay_amount = ?, pending_amount = ?, pay_status = ? WHERE id = ?";
-        $updateStmt = $con->prepare($updateQuery);
+            // Prepare update query
+            $updateQuery = "UPDATE packages_data SET pay_amount = ?, pending_amount = ?, pay_status = ? WHERE id = ?";
+            $updateStmt = $con->prepare($updateQuery);
 
-        if ($updateStmt === false) {
-            die("Update prepare failed: " . $con->error);
-        }
+            if ($updateStmt === false) {
+                die("Update prepare failed: " . $con->error);
+            }
 
-        // Bind parameters
-        $updateStmt->bind_param("iiii", $cur_pay_amount, $cur_pending_amount, $status, $package_data_id);
+            // Bind parameters
+            $updateStmt->bind_param("iiii", $cur_pay_amount, $cur_pending_amount, $status, $package_data_id);
 
-        // Execute update query
-        if ($updateStmt->execute()) {
-            echo "Transaction inserted and package updated successfully!";
+            // Execute update query
+            if ($updateStmt->execute()) {
+                echo "Transaction inserted and package updated successfully!";
+            } else {
+                echo "Error updating package: " . $updateStmt->error;
+            }
+
+            $updateStmt->close();
         } else {
-            echo "Error updating package: " . $updateStmt->error;
+            echo "Error inserting transaction: " . $result;
         }
-
-        $updateStmt->close();
-    } else {
-        echo "Error inserting transaction: " . $result;
     }
 }
 
