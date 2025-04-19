@@ -7,7 +7,7 @@ include 'getPackages_Info.php';
     <h2>Pay Amount</h2>
     <form id="editMemberForm">
       <input type="hidden" id="members_id" name="members_id">
-      <input type="hidden" id="transaction_update" name="members_id" value="1">
+      <input type="hidden" id="transaction_update" name="transaction_update" value="1">
       <input type="hidden" id="package_data_id" name="package_data_id">
       <div class="form-group">
         <label for="editFullName">Date </label>
@@ -68,7 +68,7 @@ include 'getPackages_Info.php';
         </select>
       </div>
 
-      <button type="submit" class="submit-btn">Update Member</button>
+      <button class="submit-btn">Pay Amount</button>
     </form>
   </div>
 </div>
